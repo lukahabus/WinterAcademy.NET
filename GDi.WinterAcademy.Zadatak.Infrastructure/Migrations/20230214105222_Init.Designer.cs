@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GDi.WinterAcademy.Zadatak.Infrastructure.Migrations
 {
     [DbContext(typeof(WinterAcademyZadatakDbContext))]
-    [Migration("20230207104214_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230214105222_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,8 +78,9 @@ namespace GDi.WinterAcademy.Zadatak.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("Description")
-                        .HasColumnType("int");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("HighestValueExpected")
                         .HasColumnType("real");
