@@ -1,0 +1,27 @@
+﻿using GDi.WinterAcademy.Zadatak.API.Models.Requests;
+using GDi.WinterAcademy.Zadatak.API.Models.SignalR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+
+namespace GDi.WinterAcademy.Zadatak.API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SignalRealTimeController : ControllerBase
+    {
+        private IHubContext<AppHub> _hub;
+
+        public SignalRealTimeController(IHubContext<AppHub> hub) 
+        { 
+            _hub = hub;
+        }
+
+        [HttpPost("notify")]
+        public async Task<ActionResult> Notify([FromBody] NotifyRequest request)
+        {
+            await _hub.Clients.All.SendAsync("camundaMessageHub", request);
+            return this.Ok();
+        }
+    }
+}
