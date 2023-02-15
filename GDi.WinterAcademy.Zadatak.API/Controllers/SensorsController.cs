@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Text;
+using System.Text.Json.Serialization;
 using static GDi.WinterAcademy.Zadatak.API.Models.NotificationsDTO;
 
 namespace GDi.WinterAcademy.Zadatak.API.Controllers
@@ -14,10 +17,12 @@ namespace GDi.WinterAcademy.Zadatak.API.Controllers
     public class SensorsController : ControllerBase
     {
         private readonly WinterAcademyZadatakDbContext _dbContext;
+        private readonly HttpClient _httpClient;
 
-        public SensorsController(WinterAcademyZadatakDbContext dbContext)
+        public SensorsController(WinterAcademyZadatakDbContext dbContext, HttpClient httpClient)
         {
             _dbContext = dbContext;
+            _httpClient = httpClient;
         }
 
         [HttpGet]
@@ -110,6 +115,22 @@ namespace GDi.WinterAcademy.Zadatak.API.Controllers
                     sensorType.HighestValueExpected, 
                     null
                 ));
+        }
+
+        [HttpPost("check/{sensorId}")]
+        public async Task<ActionResult> Check(int sensorId)
+        {
+            var processId = "sensor_check";
+            var url = $"http://localhost:8080/engine-rest/process-definition/key/{processId}/start";
+            var bodyData = new {variables = new { }, businessKey = sensorId.ToString() };
+            var resp = await _httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(bodyData), Encoding.UTF8, "application/json"));
+            var content = await resp.Content.ReadAsStringAsync();
+            if(!resp.IsSuccessStatusCode)
+            {
+                throw new Exception($"DeleteConfigurationResponse exception, status code: {resp.StatusCode}, content: {content}");
+            }
+
+            return this.Ok();
         }
 
         [HttpPut("{id}")]
