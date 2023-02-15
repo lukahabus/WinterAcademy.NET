@@ -36,9 +36,9 @@ app.UseHttpsRedirection();
 app.UseCors(builder =>
 {
     builder
-       //.WithOrigins("http://localhost:4200", "https://localhost:4200")
-       .AllowAnyOrigin()
-       //.SetIsOriginAllowedToAllowWildcardSubdomains()
+       .WithOrigins("http://localhost:4200", "https://localhost:4200")
+       //.AllowAnyOrigin()
+       .SetIsOriginAllowedToAllowWildcardSubdomains()
        .AllowAnyHeader()
        .AllowCredentials()
        .WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS")

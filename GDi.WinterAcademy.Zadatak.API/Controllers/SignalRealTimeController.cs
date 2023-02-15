@@ -23,5 +23,17 @@ namespace GDi.WinterAcademy.Zadatak.API.Controllers
             await _hub.Clients.All.SendAsync("camundaMessageHub", request);
             return this.Ok();
         }
+
+        [HttpGet]
+        public async Task<ActionResult> CheckFunctionality()
+        {
+            var senzorFunctionality = false;
+            Random random = new Random();
+            if(random.NextDouble() < 0.9)
+            {
+                senzorFunctionality = true;
+            }
+            return this.Ok(senzorFunctionality);
+        }
     }
 }
